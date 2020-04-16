@@ -33,7 +33,7 @@ Recall.create = (newRecall, result) => {
 };
 
 Recall.findById = (recall_id, result) => {
-  sql.query(`SELECT * FROM user WHERE user_id = ${recall_id}`, (err, res) => {
+  sql.query(`SELECT * FROM fullrecallapi WHERE recall_id = ${recall_id}`, (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(err, null);
@@ -52,45 +52,44 @@ Recall.findById = (recall_id, result) => {
 };
 
 Recall.search = (search, sort_by, limit, offset, result) => {
-    searchQuery = (search) => {
-        if (search == "") {
-            return "";
-        } else {
-            return ` AND description LIKE '%${search}%'`; 
-        }
-    };
+  searchQuery = (search) => {
+      if (search == "") {
+        return "";
+      } else {
+        return ` AND description LIKE '%${search}%'`; 
+      }
+  };
 
-    sortByQuery = (sort_by) => {
-        if (sort_by == "") {
-            return "";
-        }
-        if (sort_by == "high_priority") {
-            return ` AND \`${sort_by}\` = b'1'`; 
-        }
-        return ` ORDER BY \`${sort_by}\` DESC`; 
-    };
+  sortByQuery = (sort_by) => {
+      if (sort_by == "") {
+        return "";
+      }
+      if (sort_by == "high_priority") {
+        return ` AND \`${sort_by}\` = b'1'`; 
+      }
+      return ` ORDER BY \`${sort_by}\` DESC`; 
+  };
 
-    limitQuery = (limit, offset) => {
-        if (limit == "") {
-            return "";
-        }
-        if (offset == "") {
-            return ` LIMIT ${limit}`;
-        }
-        return ` LIMIT ${limit}, ${offset}`;
-    };
+  limitQuery = (limit, offset) => {
+    if (limit == "") {
+      return "";
+    }
+    if (offset == "") {
+      return ` LIMIT ${limit}`;
+    }
+    return ` LIMIT ${limit}, ${offset}`;
+  };
 
-    console.log(`SELECT * FROM fullrecallapi WHERE 1=1${searchQuery(search)}${sortByQuery(sort_by)}${limitQuery(limit, offset)}`);
-    sql.query(`SELECT * FROM fullrecallapi WHERE 1=1${searchQuery(search)}${sortByQuery(sort_by)}${limitQuery(limit, offset)}`, (err, res) => {
-        if (err) {
-            console.log("error: ", err);
-            result(null, err);
-            return;
-        }
+  sql.query(`SELECT * FROM fullrecallapi WHERE 1=1${searchQuery(search)}${sortByQuery(sort_by)}${limitQuery(limit, offset)}`, (err, res) => {
+    if (err) {
+      console.log("error: ", err);
+      result(null, err);
+      return;
+    }
 
-        console.log("recalls: ", res);
-        result(null, res);
-    });
+    console.log("recalls: ", res);
+    result(null, res);
+  });
 };
 
 Recall.updateById = (recall_id, recall, result) => {

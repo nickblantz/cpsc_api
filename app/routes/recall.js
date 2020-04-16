@@ -17,5 +17,5 @@ module.exports = app => {
     // app.delete("/recall/:recall_id", controller.delete);
   
     // Delete all Recalls
-    // app.delete("/user", controller.deleteAll);
+    // app.delete("/recall", controller.deleteAll);
   };
