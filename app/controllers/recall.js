@@ -1,3 +1,4 @@
+const https = require('https')
 const Recall = require("../models/recall.js");
 
 // Create and Save a new Recall
@@ -92,7 +93,28 @@ exports.update = (req, res) => {
             message: "Error updating Recall with id " + req.params.recall_id
           });
         }
-      } else res.send(data);
+      } else {
+        if (data.high_priority) {
+          const options = {
+            hostname: 'scraper.cpscraper.com',
+            port: 80,
+            path: 'scrape_recall/' + data.recall_id,
+            method: 'GET'
+          }
+          const req = https.request(options, res => {
+            res.on('data', d => {
+              console.error('started scraping for ' + data.recall_id)
+            })
+          })
+          
+          req.on('error', error => {
+            console.error(error)
+          })
+          
+          req.end()
+        }
+        res.send(data);
+      }
     }
   );
 };
