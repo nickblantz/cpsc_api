@@ -12,7 +12,7 @@ app.use(bodyParser.json());
 app.use(cors()); 
 
 // set port, listen for requests
-app.listen(3033, () => {
+app.listen(80, () => {
   console.log("Server is running on port 3033.");
 });
 
