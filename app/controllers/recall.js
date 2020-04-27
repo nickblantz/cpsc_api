@@ -95,7 +95,11 @@ exports.update = (req, res) => {
         }
       } else {
         if (data.high_priority) {
-          request('http://scraper.cpscraper.com/scrape_recall/' + data.recall_id)
+          request
+            .get('http://scraper.cpscraper.com/scrape_recall/' + data.recall_id)
+            .on('error', function(err) {
+              console.log(err);
+            });
         }
         res.send(data);
       }
