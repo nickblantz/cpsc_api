@@ -1,4 +1,4 @@
-const https = require('https')
+var request = require("request");
 const Recall = require("../models/recall.js");
 
 // Create and Save a new Recall
@@ -95,10 +95,7 @@ exports.update = (req, res) => {
         }
       } else {
         if (data.high_priority) {
-          https.get('http://scraper.cpscraper.com/scrape_recall/' + data.recall_id, (resp) => { })
-            .on("error", (err) => {
-              console.log("Error: " + err.message);
-            });
+          request('http://scraper.cpscraper.com/scrape_recall/' + data.recall_id)
         }
         res.send(data);
       }
