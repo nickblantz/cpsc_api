@@ -95,24 +95,10 @@ exports.update = (req, res) => {
         }
       } else {
         if (data.high_priority) {
-          const options = {
-            scheme: 'http',
-            hostname: 'scraper.cpscraper.com',
-            port: 80,
-            path: 'scrape_recall/' + data.recall_id,
-            method: 'GET'
-          }
-          const req = https.request(options, res => {
-            res.on('data', d => {
-              console.error('started scraping for ' + data.recall_id)
-            })
-          })
-          
-          req.on('error', error => {
-            console.error(error)
-          })
-          
-          req.end()
+          https.get('http://scraper.cpscraper.com/scrape_recall/' + data.recall_id, (resp) => { })
+            .on("error", (err) => {
+              console.log("Error: " + err.message);
+            });
         }
         res.send(data);
       }
