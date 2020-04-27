@@ -96,6 +96,7 @@ exports.update = (req, res) => {
       } else {
         if (data.high_priority) {
           const options = {
+            scheme: 'http',
             hostname: 'scraper.cpscraper.com',
             port: 80,
             path: 'scrape_recall/' + data.recall_id,
