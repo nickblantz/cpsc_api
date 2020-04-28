@@ -20,7 +20,8 @@ const Recall = function(recall) {
 };
 
 Recall.create = (newRecall, result) => {
-  sql.query("INSERT INTO fullrecallapi SET ?", newRecall, (err, res) => {
+  var conn = sql.getConnection();
+  conn.query("INSERT INTO fullrecallapi SET ?", newRecall, (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(err, null);
@@ -33,7 +34,8 @@ Recall.create = (newRecall, result) => {
 };
 
 Recall.findById = (recall_id, result) => {
-  sql.query(`SELECT * FROM fullrecallapi WHERE recall_id = ${recall_id}`, (err, res) => {
+  var conn = sql.getConnection();
+  conn.query(`SELECT * FROM fullrecallapi WHERE recall_id = ${recall_id}`, (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(err, null);
@@ -52,6 +54,8 @@ Recall.findById = (recall_id, result) => {
 };
 
 Recall.search = (search, sort_by, limit, offset, result) => {
+  var conn = sql.getConnection();
+
   searchQuery = (search) => {
       if (search == "") {
         return "";
@@ -79,8 +83,8 @@ Recall.search = (search, sort_by, limit, offset, result) => {
     }
     return ` LIMIT ${limit}, ${offset}`;
   };
-
-  sql.query(`SELECT * FROM fullrecallapi WHERE 1=1${searchQuery(search)}${sortByQuery(sort_by)}${limitQuery(limit, offset)}`, (err, res) => {
+  
+  conn.query(`SELECT * FROM fullrecallapi WHERE 1=1${searchQuery(search)}${sortByQuery(sort_by)}${limitQuery(limit, offset)}`, (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(null, err);
@@ -93,7 +97,8 @@ Recall.search = (search, sort_by, limit, offset, result) => {
 };
 
 Recall.updateById = (recall_id, recall, result) => {
-  sql.query(
+  var conn = sql.getConnection();
+  conn.query(
     "UPDATE fullrecallapi SET recall_number = ?, `high_priority` = ?, date = ?, recall_heading = ?, name_of_product = ?, description = ?, hazard = ?, remedy_type = ?, units = ?, conjunction_with = ?, incidents = ?, remedy = ?, sold_at = ?, distributors = ?, manufactured_in = ? WHERE recall_id = ?",
     [recall.recall_number, recall.high_priority, recall.date, recall.recall_heading, recall.name_of_product, recall.description, recall.hazard, recall.remedy_type, recall.units, recall.conjunction_with, recall.incidents, recall.remedy,recall.sold_at, recall.distributors, recall.manufactured_in, recall_id],
     (err, res) => {
@@ -116,7 +121,8 @@ Recall.updateById = (recall_id, recall, result) => {
 };
 
 Recall.remove = (recall_id, result) => {
-  sql.query("DELETE FROM fullrecallapi WHERE recall_id = ?", recall_id, (err, res) => {
+  var conn = sql.getConnection();
+  conn.query("DELETE FROM fullrecallapi WHERE recall_id = ?", recall_id, (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(null, err);
@@ -135,7 +141,8 @@ Recall.remove = (recall_id, result) => {
 };
 
 Recall.removeAll = result => {
-  sql.query("DELETE FROM fullrecallapi", (err, res) => {
+  var conn = sql.getConnection();
+  conn.query("DELETE FROM fullrecallapi", (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(null, err);

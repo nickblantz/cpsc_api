@@ -11,7 +11,8 @@ const Violation = function(violation) {
 };
 
 Violation.create = (newViolation, result) => {
-  sql.query("INSERT INTO Violation SET ?", newViolation, (err, res) => {
+  var conn = sql.getConnection();
+  conn.query("INSERT INTO Violation SET ?", newViolation, (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(err, null);
@@ -24,7 +25,8 @@ Violation.create = (newViolation, result) => {
 };
 
 Violation.findById = (violation_id, result) => {
-  sql.query(`SELECT * FROM Violation WHERE violation_id = ${violation_id}`, (err, res) => {
+  var conn = sql.getConnection();
+  conn.query(`SELECT * FROM Violation WHERE violation_id = ${violation_id}`, (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(err, null);
@@ -43,6 +45,7 @@ Violation.findById = (violation_id, result) => {
 };
 
 Violation.search = (violation_status, result) => {
+  var conn = sql.getConnection();
   statusQuery = (status) => {
     if (status == "") {
       return "";
@@ -50,7 +53,7 @@ Violation.search = (violation_status, result) => {
     return ` AND violation_status = '${status}'`;
   };
 
-  sql.query(`SELECT * FROM Violation WHERE 1=1${statusQuery(violation_status)}`, (err, res) => {
+  conn.query(`SELECT * FROM Violation WHERE 1=1${statusQuery(violation_status)}`, (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(null, err);
@@ -63,7 +66,8 @@ Violation.search = (violation_status, result) => {
 };
 
 Violation.updateById = (violation_id, violation, result) => {
-  sql.query(
+  var conn = sql.getConnection();
+  conn.query(
     "UPDATE Violation SET url = ?, title = ?, investigator_id = ?, recall_id = ?, violation_status = ? WHERE violation_id = ?",
     [violation.url, violation.title, violation.investigator_id, violation.recall_id, violation.violation_status, violation_id],
     (err, res) => {
@@ -86,7 +90,8 @@ Violation.updateById = (violation_id, violation, result) => {
 };
 
 Violation.remove = (violation_id, result) => {
-  sql.query("DELETE FROM Violation WHERE violation_id = ?", violation_id, (err, res) => {
+  var conn = sql.getConnection();
+  conn.query("DELETE FROM Violation WHERE violation_id = ?", violation_id, (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(null, err);
@@ -105,7 +110,8 @@ Violation.remove = (violation_id, result) => {
 };
 
 Violation.removeAll = result => {
-  sql.query("DELETE FROM Violation", (err, res) => {
+  var conn = sql.getConnection();
+  conn.query("DELETE FROM Violation", (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(null, err);

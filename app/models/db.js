@@ -35,5 +35,12 @@ function connectDatabase() {
   });
 }
 
+function getConnection() {
+  if (connection.state === 'disconnected') {
+    connectDatabase();
+  }
+  return connection;
+}
+
 connectDatabase();
-module.exports = connection;
+module.exports = getConnection;

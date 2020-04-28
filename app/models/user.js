@@ -9,7 +9,8 @@ const User = function(user) {
 };
 
 User.create = (newUser, result) => {
-  sql.query("INSERT INTO user SET ?", newUser, (err, res) => {
+  var conn = sql.getConnection();
+  conn.query("INSERT INTO user SET ?", newUser, (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(err, null);
@@ -22,7 +23,8 @@ User.create = (newUser, result) => {
 };
 
 User.findById = (user_id, result) => {
-  sql.query(`SELECT * FROM user WHERE user_id = ${user_id}`, (err, res) => {
+  var conn = sql.getConnection();
+  conn.query(`SELECT * FROM user WHERE user_id = ${user_id}`, (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(err, null);
@@ -41,26 +43,28 @@ User.findById = (user_id, result) => {
 };
 
 User.login = (email, password, result) => {
-    sql.query(`SELECT * FROM user WHERE email = "${email}" AND password = "${password}"`, (err, res) => {
-        if (err) {
-            console.log("error: ", err);
-            result(err, null);
-            return;
-        }
-    
-        if (res.length) {
-            console.log("found user: ", res[0]);
-            result(null, res[0]);
-            return;
-        }
-    
-        // not found User with the user_id
-        result({ kind: "not_found" }, null);
-      });
+  var conn = sql.getConnection();
+  conn.query(`SELECT * FROM user WHERE email = "${email}" AND password = "${password}"`, (err, res) => {
+  if (err) {
+    console.log("error: ", err);
+    result(err, null);
+    return;
+  }
+
+  if (res.length) {
+    console.log("found user: ", res[0]);
+    result(null, res[0]);
+    return;
+  }
+
+  // not found User with the user_id
+  result({ kind: "not_found" }, null);
+});
 }
 
 User.getAll = result => {
-  sql.query("SELECT * FROM user", (err, res) => {
+  var conn = sql.getConnection();
+  conn.query("SELECT * FROM user", (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(null, err);
@@ -73,7 +77,8 @@ User.getAll = result => {
 };
 
 User.updateById = (user_id, user, result) => {
-  sql.query(
+  var conn = sql.getConnection();
+  conn.query(
     "UPDATE user SET email = ?, password = ?, first_name = ?, user_type = ? WHERE user_id = ?",
     [user.email, user.password, user.first_name, user.user_type, user_id],
     (err, res) => {
@@ -96,7 +101,8 @@ User.updateById = (user_id, user, result) => {
 };
 
 User.remove = (user_id, result) => {
-  sql.query("DELETE FROM user WHERE user_id = ?", user_id, (err, res) => {
+  var conn = sql.getConnection();
+  conn.query("DELETE FROM user WHERE user_id = ?", user_id, (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(null, err);
@@ -115,7 +121,8 @@ User.remove = (user_id, result) => {
 };
 
 User.removeAll = result => {
-  sql.query("DELETE FROM user", (err, res) => {
+  var conn = sql.getConnection();
+  conn.query("DELETE FROM user", (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(null, err);
