@@ -1,4 +1,4 @@
-const sql = require("./db.js");
+const getConnection = require("./db.js");
 
 // constructor
 const User = function(user) {
@@ -9,7 +9,7 @@ const User = function(user) {
 };
 
 User.create = (newUser, result) => {
-  var conn = sql.getConnection();
+  var conn = getConnection();
   conn.query("INSERT INTO user SET ?", newUser, (err, res) => {
     if (err) {
       console.log("error: ", err);
@@ -23,7 +23,7 @@ User.create = (newUser, result) => {
 };
 
 User.findById = (user_id, result) => {
-  var conn = sql.getConnection();
+  var conn = getConnection();
   conn.query(`SELECT * FROM user WHERE user_id = ${user_id}`, (err, res) => {
     if (err) {
       console.log("error: ", err);
@@ -43,7 +43,7 @@ User.findById = (user_id, result) => {
 };
 
 User.login = (email, password, result) => {
-  var conn = sql.getConnection();
+  var conn = getConnection();
   conn.query(`SELECT * FROM user WHERE email = "${email}" AND password = "${password}"`, (err, res) => {
   if (err) {
     console.log("error: ", err);
@@ -63,7 +63,7 @@ User.login = (email, password, result) => {
 }
 
 User.getAll = result => {
-  var conn = sql.getConnection();
+  var conn = getConnection();
   conn.query("SELECT * FROM user", (err, res) => {
     if (err) {
       console.log("error: ", err);
@@ -77,7 +77,7 @@ User.getAll = result => {
 };
 
 User.updateById = (user_id, user, result) => {
-  var conn = sql.getConnection();
+  var conn = getConnection();
   conn.query(
     "UPDATE user SET email = ?, password = ?, first_name = ?, user_type = ? WHERE user_id = ?",
     [user.email, user.password, user.first_name, user.user_type, user_id],
@@ -101,7 +101,7 @@ User.updateById = (user_id, user, result) => {
 };
 
 User.remove = (user_id, result) => {
-  var conn = sql.getConnection();
+  var conn = getConnection();
   conn.query("DELETE FROM user WHERE user_id = ?", user_id, (err, res) => {
     if (err) {
       console.log("error: ", err);
@@ -121,7 +121,7 @@ User.remove = (user_id, result) => {
 };
 
 User.removeAll = result => {
-  var conn = sql.getConnection();
+  var conn = getConnection();
   conn.query("DELETE FROM user", (err, res) => {
     if (err) {
       console.log("error: ", err);
