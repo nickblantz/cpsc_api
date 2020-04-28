@@ -1,4 +1,4 @@
-const sql = require("./db.js");
+const getConnection = require("./db.js");
 
 // constructor
 const Recall = function(recall) {
@@ -20,7 +20,7 @@ const Recall = function(recall) {
 };
 
 Recall.create = (newRecall, result) => {
-  var conn = sql.getConnection();
+  var conn = getConnection();
   conn.query("INSERT INTO fullrecallapi SET ?", newRecall, (err, res) => {
     if (err) {
       console.log("error: ", err);
@@ -34,7 +34,7 @@ Recall.create = (newRecall, result) => {
 };
 
 Recall.findById = (recall_id, result) => {
-  var conn = sql.getConnection();
+  var conn = getConnection();
   conn.query(`SELECT * FROM fullrecallapi WHERE recall_id = ${recall_id}`, (err, res) => {
     if (err) {
       console.log("error: ", err);
@@ -54,7 +54,7 @@ Recall.findById = (recall_id, result) => {
 };
 
 Recall.search = (search, sort_by, limit, offset, result) => {
-  var conn = sql.getConnection();
+  var conn = getConnection();
 
   searchQuery = (search) => {
       if (search == "") {
@@ -97,7 +97,7 @@ Recall.search = (search, sort_by, limit, offset, result) => {
 };
 
 Recall.updateById = (recall_id, recall, result) => {
-  var conn = sql.getConnection();
+  var conn = getConnection();
   conn.query(
     "UPDATE fullrecallapi SET recall_number = ?, `high_priority` = ?, date = ?, recall_heading = ?, name_of_product = ?, description = ?, hazard = ?, remedy_type = ?, units = ?, conjunction_with = ?, incidents = ?, remedy = ?, sold_at = ?, distributors = ?, manufactured_in = ? WHERE recall_id = ?",
     [recall.recall_number, recall.high_priority, recall.date, recall.recall_heading, recall.name_of_product, recall.description, recall.hazard, recall.remedy_type, recall.units, recall.conjunction_with, recall.incidents, recall.remedy,recall.sold_at, recall.distributors, recall.manufactured_in, recall_id],
@@ -121,7 +121,7 @@ Recall.updateById = (recall_id, recall, result) => {
 };
 
 Recall.remove = (recall_id, result) => {
-  var conn = sql.getConnection();
+  var conn = getConnection();
   conn.query("DELETE FROM fullrecallapi WHERE recall_id = ?", recall_id, (err, res) => {
     if (err) {
       console.log("error: ", err);
@@ -141,7 +141,7 @@ Recall.remove = (recall_id, result) => {
 };
 
 Recall.removeAll = result => {
-  var conn = sql.getConnection();
+  var conn = getConnection();
   conn.query("DELETE FROM fullrecallapi", (err, res) => {
     if (err) {
       console.log("error: ", err);

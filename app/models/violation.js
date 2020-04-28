@@ -1,4 +1,4 @@
-const sql = require("./db.js");
+const getConnection = require("./db.js");
 
 // constructor
 const Violation = function(violation) {
@@ -11,7 +11,7 @@ const Violation = function(violation) {
 };
 
 Violation.create = (newViolation, result) => {
-  var conn = sql.getConnection();
+  var conn = getConnection();
   conn.query("INSERT INTO Violation SET ?", newViolation, (err, res) => {
     if (err) {
       console.log("error: ", err);
@@ -25,7 +25,7 @@ Violation.create = (newViolation, result) => {
 };
 
 Violation.findById = (violation_id, result) => {
-  var conn = sql.getConnection();
+  var conn = getConnection();
   conn.query(`SELECT * FROM Violation WHERE violation_id = ${violation_id}`, (err, res) => {
     if (err) {
       console.log("error: ", err);
@@ -45,7 +45,7 @@ Violation.findById = (violation_id, result) => {
 };
 
 Violation.search = (violation_status, result) => {
-  var conn = sql.getConnection();
+  var conn = getConnection();
   statusQuery = (status) => {
     if (status == "") {
       return "";
@@ -66,7 +66,7 @@ Violation.search = (violation_status, result) => {
 };
 
 Violation.updateById = (violation_id, violation, result) => {
-  var conn = sql.getConnection();
+  var conn = getConnection();
   conn.query(
     "UPDATE Violation SET url = ?, title = ?, investigator_id = ?, recall_id = ?, violation_status = ? WHERE violation_id = ?",
     [violation.url, violation.title, violation.investigator_id, violation.recall_id, violation.violation_status, violation_id],
@@ -90,7 +90,7 @@ Violation.updateById = (violation_id, violation, result) => {
 };
 
 Violation.remove = (violation_id, result) => {
-  var conn = sql.getConnection();
+  var conn = getConnection();
   conn.query("DELETE FROM Violation WHERE violation_id = ?", violation_id, (err, res) => {
     if (err) {
       console.log("error: ", err);
@@ -110,7 +110,7 @@ Violation.remove = (violation_id, result) => {
 };
 
 Violation.removeAll = result => {
-  var conn = sql.getConnection();
+  var conn = getConnection();
   conn.query("DELETE FROM Violation", (err, res) => {
     if (err) {
       console.log("error: ", err);
