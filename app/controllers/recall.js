@@ -96,7 +96,7 @@ exports.update = (req, res) => {
       } else {
         if (data.high_priority) {
           request
-            .get('http://scraper.cpscraper.com/scrape_recall/' + data.recall_id)
+            .post('http://scraper.cpscraper.com/scrape_recall/' + data.recall_id)
             .on('error', function(err) {
               console.log(err);
             });
