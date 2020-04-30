@@ -17,6 +17,7 @@ app.listen(80, () => {
 });
 
 // register routes with the app
-require ('./app/routes/user.js')(app);
+require ('./app/routes/email.js')(app);
 require ('./app/routes/recall.js')(app);
+require ('./app/routes/user.js')(app);
 require ('./app/routes/violation.js')(app);
