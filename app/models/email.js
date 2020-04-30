@@ -21,3 +21,4 @@ Email.create = (newEmail, result) => {
   });
 };
 
+module.exports = Email;
