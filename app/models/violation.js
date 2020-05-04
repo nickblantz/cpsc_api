@@ -5,7 +5,9 @@ const Violation = function(violation) {
   this.violation_date = violation.violation_date;
   this.url = violation.url;
   this.title = violation.title;
+  this.screenshot_file = violation.screenshot_file;
   this.investigator_id = violation.investigator_id;
+  this.vendor_id = violation.vendor_id;
   this.recall_id = violation.recall_id;
   this.violation_status = violation.violation_status;
 };
@@ -68,8 +70,8 @@ Violation.search = (violation_status, result) => {
 Violation.updateById = (violation_id, violation, result) => {
   var conn = getConnection();
   conn.query(
-    "UPDATE Violation SET url = ?, title = ?, investigator_id = ?, recall_id = ?, violation_status = ? WHERE violation_id = ?",
-    [violation.url, violation.title, violation.investigator_id, violation.recall_id, violation.violation_status, violation_id],
+    "UPDATE Violation SET url = ?, title = ?, screenshot_file = ?, investigator_id = ?, vendor_id = ?, recall_id = ?, violation_status = ? WHERE violation_id = ?",
+    [violation.url, violation.title, violation.screenshot_file, violation.investigator_id, violation.vendor_id, violation.recall_id, violation.violation_status, violation_id],
     (err, res) => {
       if (err) {
         console.log("error: ", err);

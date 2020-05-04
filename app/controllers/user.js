@@ -2,7 +2,6 @@ const User = require("../models/user.js");
 
 // Create and Save a new User
 exports.create = (req, res) => {
-    console.log(req);
     // Validate request
     if (!req.body) {
       res.status(400).send({
@@ -20,7 +19,6 @@ exports.create = (req, res) => {
   
     // Save User in the database
     User.create(user, (err, data) => {
-      console.log(user);
       if (err)
         res.status(500).send({
           message:
@@ -60,7 +58,6 @@ exports.findOne = (req, res) => {
   };
 
 exports.login = (req, res) => {
-    console.log(req);
     User.login(req.body.email, req.body.password, (err, data) => {
         if (err) {
             res.send({

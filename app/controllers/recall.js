@@ -31,7 +31,6 @@ exports.create = (req, res) => {
 
   // Save Recall in the database
   Recall.create(recall, (err, data) => {
-    console.log(recall);
     if (err)
       res.status(500).send({
         message:

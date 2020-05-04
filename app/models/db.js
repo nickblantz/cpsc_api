@@ -27,8 +27,8 @@ function connectDatabase() {
   });
   
   connection.on('error', function(err) {
-    if(err.code === 'PROTOCOL_CONNECTION_LOST') {
-      connectDatabase();                        
+    if (err.code === 'PROTOCOL_CONNECTION_LOST' || err.code === 'ECONNRESET') {
+      connectDatabase();
     } else {                                   
       throw err;
     }

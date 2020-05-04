@@ -12,6 +12,9 @@ module.exports = app => {
   
     // Update a Violation with violationId
     app.put("/violation/:violation_id", controller.update);
+
+    // Mark a violation as confirmed
+    app.post("/violation/:violation_id/confirm", controller.confirm);
   
     // Delete a Violation with violationId
     // app.delete("/violation/:violation_id", controller.delete);
