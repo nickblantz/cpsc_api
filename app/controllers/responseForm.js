@@ -39,10 +39,13 @@ exports.update = (req, res) => {
     res.status(400).send({ message: "Content can not be empty!" });
   }
 
-  const date = new Date.now()
+  const date = new Date();
+  const year = date.getFullYear().toString();
+  const month = (date.getMonth() + 1).toString().padStart(2, "0");
+  const day = (date.getDate() + 1).toString().padStart(2, "0");
 
   const responseForm = new ResponseForm({
-    form_completion_date: `${date.getFullYear()}-${(date.getMonth() + 1).slice(-2)}-${(date.getDate()).slice(-2) }`,
+    form_completion_date: `${year}-${month}-${day}`,
     acknowledgement: req.body.acknowledgement,
     response: req.body.response,
     vendor_id: -1
