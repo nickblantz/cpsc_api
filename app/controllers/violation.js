@@ -1,5 +1,6 @@
 const Violation = require("../models/violation.js")
 const Recall = require("../models/recall.js")
+const ResponseForm = require("../models/responseForm.js")
 const User = require("../models/user.js");
 const Mailer = require("../mailer.js")
 
@@ -37,7 +38,7 @@ exports.create = (req, res) => {
 
 // Retrieve all Violations from the database.
 exports.searchViolations = (req, res) => {
-  Violation.search(req.body.violation_status, (err, data) => {
+  Violation.search(req.body.search, req.body.violation_status, req.body.sort_by, req.body.limit, req.body.offset, (err, data) => {
     if (err)
       res.status(500).send({
         message:
@@ -102,7 +103,7 @@ exports.confirm = (req, res) => {
 
   function makePassword(length) {
     var result = "";
-    var characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    var characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     var charactersLength = characters.length;
     for ( var i = 0; i < length; i++ ) {
       result += characters.charAt(Math.floor(Math.random() * charactersLength));
@@ -112,43 +113,59 @@ exports.confirm = (req, res) => {
 
   const _user = new User({
     email: req.body.vendor.email,
-    password: makePassword(12),
+    password: makePassword(2) + '-' + makePassword(3),
     first_name: req.body.vendor.full_name,
     user_type: "Vendor"
   });
 
   User.create(_user, (err, user) => {
     if (err) {
-      res.status(500).send({
-        message: "Confirm Violation: Could not create vendor"
-      });
+      res.status(500).send({ message: "Confirm Violation: Could not create vendor" });
     } else {
-
-      const _violation = new Violation({
-        violation_date: req.body.violation.violation_date,
-        url: req.body.violation.url,
-        title: req.body.violation.title,
-        screenshot_file: req.body.violation.screenshot_file,
-        investigator_id: req.body.violation.investigator_id,
-        vendor_id: user.user_id,
-        recall_id: req.body.violation.recall_id,
-        violation_status: "Confirmed"
+      const _responseForm = new ResponseForm({
+        form_completion_date: null,
+        acknowledgement: null,
+        response: null,
+        vendor_id: user.user_id
       });
 
-      Violation.updateById(req.params.violation_id, _violation, (err, violation) => {
+      ResponseForm.create(_responseForm, (err, responseForm) => {
         if (err) {
-          res.status(500).send({
-            message: "Confirm Violation: Could not update Violation with id " + req.params.violation_id
-          });
+          res.status(500).send({ message: "Confirm Violation: Could not create response form" });
         } else {
-          Recall.findById(violation.recall_id, (err, recall) => {
+          const _violation = new Violation({
+            violation_date: req.body.violation.violation_date,
+            url: req.body.violation.url,
+            title: req.body.violation.title,
+            screenshot_file: req.body.violation.screenshot_file,
+            investigator_id: req.body.violation.investigator_id,
+            vendor_id: user.user_id,
+            recall_id: req.body.violation.recall_id,
+            violation_status: "Confirmed"
+          });
+
+          Violation.updateById(req.params.violation_id, _violation, (err, violation) => {
             if (err) {
-              res.status(500).send({
-                message: "Confirm Violation: Could not find recall with id " + violation.recall_id
-              });
+              res.status(500).send({ message: "Confirm Violation: Could not update Violation with id " + req.params.violation_id });
             } else {
-              Mailer.sendViolationEmail(user.email, user.first_name, user.password, recall.recall_number, violation.url, "http://www.cpscraper.com/")
-              res.send(violation);
+              Recall.findById(violation.recall_id, (err, recall) => {
+                if (err) {
+                  res.status(500).send({ message: "Confirm Violation: Could not find recall with id " + violation.recall_id });
+                } else {
+                  Mailer.sendViolationEmail(
+                    user.email, user.first_name, 
+                    user.password, recall.recall_number, 
+                    violation.url, "http://www.cpscraper.com/response-form/" + responseForm.form_id, 
+                    (isSuccess) => {
+                      if (isSuccess) {
+                        res.send(violation);
+                      } else {
+                        res.status(500).send({ message: "Confirm Violation: Could not send notification email" });
+                      }
+                    }
+                  );
+                }
+              });
             }
           });
         }

@@ -46,8 +46,17 @@ Violation.findById = (violation_id, result) => {
   });
 };
 
-Violation.search = (violation_status, result) => {
+Violation.search = (search, violation_status, sort_by, limit, offset, result) => {
   var conn = getConnection();
+
+  searchQuery = (search) => {
+    if (search == "") {
+      return "";
+    } else {
+      return ` AND title LIKE '%${search}%'`; 
+    }
+  };
+
   statusQuery = (status) => {
     if (status == "") {
       return "";
@@ -55,7 +64,27 @@ Violation.search = (violation_status, result) => {
     return ` AND violation_status = '${status}'`;
   };
 
-  conn.query(`SELECT * FROM Violation WHERE 1=1${statusQuery(violation_status)}`, (err, res) => {
+  sortByQuery = (sort_by) => {
+    if (sort_by == "") {
+      return "";
+    }
+    if (sort_by == "high_priority") {
+      return ` AND \`${sort_by}\` = b'1'`; 
+    }
+    return ` ORDER BY \`${sort_by}\` DESC`; 
+  };
+
+  limitQuery = (limit, offset) => {
+    if (limit == "") {
+      return "";
+    }
+    if (offset == "") {
+      return ` LIMIT ${limit}`;
+    }
+    return ` LIMIT ${limit}, ${offset}`;
+  };
+
+  conn.query(`SELECT * FROM Violation WHERE 1=1${searchQuery(search)}${statusQuery(violation_status)}${sortByQuery(sort_by)}${limitQuery(limit, offset)}`, (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(null, err);

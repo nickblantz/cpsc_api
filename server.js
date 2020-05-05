@@ -12,11 +12,12 @@ app.use(bodyParser.json());
 app.use(cors()); 
 
 // set port, listen for requests
-app.listen(80, () => {
-  console.log("Server is running on port 80.");
+app.listen(3033, () => {
+  console.log("Server is running on port 3033.");
 });
 
 // register routes with the app
 require ('./app/routes/recall.js')(app);
+require ('./app/routes/responseForm.js')(app);
 require ('./app/routes/user.js')(app);
 require ('./app/routes/violation.js')(app);
